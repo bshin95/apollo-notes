@@ -1,0 +1,31 @@
+*** What problem does Svetle solve/Why Svetle? ***
+
+- Svetle is a tool what allows us to build lightweight javascript applications. The code is very small in size, but executes a lot faster, giving us a faster application.
+- Svetle is building reactive user interfaces in the web
+
+**Svetle is a COMPILER not a framework
+- Because Svetle is not a framework, there is no extra code to be shipped, instead it compiles your code at build-time
+- The advantage is that it ships less code than react or angular
+
+1. You write normal javascript code by following a Svetle syntax
+2. Svetle compiles your code to optimzed runtime instructions, then only ships code your app really needs
+3. In the browser: compiled code executes and (re-)renders user interfaces
+
+Svetle apps are built from multiple components - UI building blocks. It follows the same philosophy as in React, Angular, Vue
+
+--------------------------------------------------------------------------------------------------------
+
+- Svetle always removes the last element
+
+--------------------------------------------------------------------------------------------------------
+
+*** Svetle Reactivity ***
+
+- you should always reassign a variable if you want svelte to update the DOM in order to change it
+- the equal sign is the trigger which will tell svelte to change it
+
+* Event Modifiers
+- event modifiers are set with | and then a method
+- method such as |once, |passive, |capture, |stopPropagation, |preventDefault
+
+* Inline function

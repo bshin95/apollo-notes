@@ -19,7 +19,7 @@ Svetle apps are built from multiple components - UI building blocks. It follows 
 
 --------------------------------------------------------------------------------------------------------
 
-*** Svetle Reactivity ***
+******************** Svetle Reactivity ***********************
 
 - you should always reassign a variable if you want svelte to update the DOM in order to change it
 - the equal sign is the trigger which will tell svelte to change it
@@ -29,3 +29,135 @@ Svetle apps are built from multiple components - UI building blocks. It follows 
 - method such as |once, |passive, |capture, |stopPropagation, |preventDefault
 
 * Inline function
+
+--------------------------------------------------------------------------------------------------------
+
+******************** Nested components & communications ********************
+
+ex:
+
+starts at app components 
+splits into -products components and -cart components
+products components can split into productsItem components
+
+the products can initially be loaded in the app and then passed down as props through the app 
+
+app / products - productsItem
+ |  \ cart
+ |
+data is passed down via props to all the nested components
+
+******************** Event forwarding ********************
+
+normal event propagation works, but not across component boundaries, if you want it to propagate across these boundaries, you can give your element an event listener but you do not define it.
+ex: a button can have on:click, but the function is not defined. The function for the on:click is defined in the app.svelte file
+
+******************** Emitting custom events ********************
+
+import { createEventDispatcher } from 'svelte'
+
+const dispatch = createEventDispatcher();
+
+  function addToCart() {
+    dispatch('add-to-cart', {id: 'p1'})
+  }
+
+- you can set the dispatcher as a variable by assigning it. 
+- then on the button on:click you can see it to the function addToCart, which will be:
+  - on:click="{addToCart}"
+- then on the app component, you can pass in on:add-to-cart={() => alert('Add to cart')}, which will listen for the add-to-cart event handler
+
+******************** Extracting Event Data ********************
+
+- you can call a function and pass in the event as an argument. you can extract the data by calling event.detail which will show you the data that you passed in.
+
+******************** Using spread props and default props ********************
+
+- wherever you want to pass props into from the parent, you must export it like export let title
+- and then in the parent component such as the app file, you can have an array in the script tag and have an item with title in the object.
+
+ex: export let title; //this will go in the child component
+
+products = [
+    {
+      id: 'p1',
+      title: 'A Book',
+      price: 9.99
+    }
+  ];
+
+  the array will be in the parent component or the app file
+
+- instead of iterating through the array and typing out each object, you can simply use the spread operator to take in the entire object.
+
+1. EXAMPLE ONE
+{#each products as product}
+<Product 
+  title={product.title}
+  price={product.price}
+  on:add-to-cart={addToCart}
+  on:delete={deleteProduct}
+/>
+{/each}
+
+2. EXAMPLE TWO
+{#each products as product}
+<Product 
+  {...product}
+  on:add-to-cart={addToCart}
+  on:delete={deleteProduct}
+/>
+{/each}
+
+- the first and second are doing exactly the same thing, however, with the spread operator, the product component now takes in the entire products array
+
+******************** Slots ********************
+
+- slots are special elements that are normal html elements
+- <slot />
+- with svelte, slots tell that any content should go between the slot tag
+- for example:
+  - if you had a modal component and wanted to output content
+    <div class="modal">
+      <slot />
+    </div>
+  - this div is in the modal component, then in the app component, you can do:
+    <Modal>
+      <h1>Hello</h1>
+      <p>sdasldjasd</p>
+    </Modal>
+- the slot tags with svelte will understand that everything passed between the Modal tags in the app component. So with the slot tag, the modal component will now render the h1 and p tag within the slot tags
+
+******************** Named & Default slots ********************
+
+- you can name slots using: <slot name="header"/>
+  - this slot is now named header and will take any content from a tag with the slot="header"
+  ex: <h1 slot="header">Hello</h1>
+- if the slot name is left blank, svelte will assume that is the default slot
+
+******************** Using slot props ********************
+- let:
+- its a way of passing slots from the component that has the slots to the component that is using the slots
+
+******************** Component Lifecycle ********************
+
+creation
+- <script> executes : basic initialization work
+- onMount() : more complex init work (e.g. data fetching)
+- onDestory() : cleanup work
+
+updates
+- beforeUpdate() : save (DOM) state before svelte updates it
+- afterUpdate() : manually update DOM/view after Svelte update
+- tick() : await Svelte's DOM update
+
+******************** Creation & update lifecycle hooks ********************
+##### REVIEW THIS LESSON AGAIN ######
+ 
+- onMount()
+- onDestory()
+- beforeUpdate()
+- afterUpdate()
+
+tick()
+- tick returns a promise and when the promise is resolve, it will go onto the next task
